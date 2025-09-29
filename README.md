@@ -35,11 +35,14 @@ Access to healthcare is often unequal, with some districts having fewer faciliti
 
 ## 🛠️ Planned Tech Stack (Tentative)  
 
-- **Frontend (UI):** React / Next.js (styling with Tailwind CSS or alternative frameworks)  
-- **Backend (APIs & Logic):** Python (FastAPI or Django REST Framework)  
-- **Database (Storage):** PostgreSQL for structured data; MongoDB for unstructured data (optional)  
-- **Data Analysis & Visualization:** Pandas / NumPy for analysis; D3.js or Recharts for interactive charts and maps  
-- **Deployment (Hosting):** Docker containers, frontend on Vercel/Netlify, backend on AWS or Heroku  
+- **Frontend (UI):** React with Ant Design for UI components  
+- **Backend (APIs & Logic):** Python (Flask)  
+- **Database (Storage):** PostgreSQL  
+- **Data Analysis & Visualization:**  
+  - **Core Libraries:** Pandas, NumPy  
+  - **Visualization & Mapping:** Matplotlib, Seaborn
+  - **Frontend Charts:** Recharts for interactive charts and maps  
+- **Deployment (Hosting):** Docker containers, deployed primarily on AWS, with alternatives like Vercel, Render, or Netlify  
 
 ---
 
