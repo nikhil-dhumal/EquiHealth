@@ -1,4 +1,6 @@
 25m0766_lab5.ipynb
 25m0769-project-setup.ipynb
+25m0769-merge-conflict.ipynb
 .ipynb_checkpoints/
+*.ipynb
 .env
