@@ -30,10 +30,16 @@ Stores details about healthcare facilities across the state.
 | Field | Type | Description |
 |--------|------|-------------|
 | `hospital_id` | INT (PK) | Unique identifier for each hospital |
+| `hosp_disp_code` | VARCHAR | Display code for the hospital |
 | `hospital_name` | VARCHAR | Name of the hospital |
+| `address` | VARCHAR | Full address of the hospital |
+| `taluka` | VARCHAR | Taluka (sub-district) where the hospital is located |
 | `district` | VARCHAR | District where the hospital is located |
-| `hospital_type` | VARCHAR | Type of hospital (e.g., Government, Corporate) |
+| `pincode` | VARCHAR | Postal code of the hospital location |
+| `mco_contact_number` | VARCHAR | Contact number of the Medical Care Officer |
 | `total_beds` | INT | Number of beds available in the hospital |
+| `hospital_type` | VARCHAR | Type of hospital (e.g., Government, Corporate) |
+| `government_sub_type` | VARCHAR | Sub-type for government hospitals (if applicable) |
 
 ---
 
