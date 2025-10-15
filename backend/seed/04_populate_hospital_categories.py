@@ -25,16 +25,16 @@ def populate_hospital_categories():
                 category = Category.query.get(category_id)
 
                 if not hospital:
-                    print(f"⚠️ Skipping: Hospital ID {hospital_id} not found in DB.")
+                    print(f"Skipping: Hospital ID {hospital_id} not found in DB.")
                     continue
                 if not category:
-                    print(f"⚠️ Skipping: Category ID {category_id} not found in DB.")
+                    print(f"Skipping: Category ID {category_id} not found in DB.")
                     continue
 
                 # Check if relationship already exists
                 existing = db.session.execute(
                     db.select(hospital_category).filter_by(
-                        hospital_id=hospital_id, state=state, category_id=category_id
+                        hospital_id=hospital_id, state_name=state, category_id=category_id
                     )
                 ).first()
 
@@ -45,13 +45,13 @@ def populate_hospital_categories():
                 # Insert relationship manually into association table
                 insert_stmt = hospital_category.insert().values(
                     hospital_id=hospital_id,
-                    state=state,
+                    state_name=state,
                     category_id=category_id
                 )
                 db.session.execute(insert_stmt)
 
             db.session.commit()
-            print("✅ Hospital–Category associations populated successfully!")
+            print("Hospital - Category associations populated successfully!")
 
 if __name__ == "__main__":
     populate_hospital_categories()

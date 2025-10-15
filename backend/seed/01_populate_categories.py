@@ -30,7 +30,7 @@ def populate_categories():
                 db.session.add(category)
 
             db.session.commit()
-            print("✅ Categories table populated successfully!")
+            print("Categories table populated successfully!")
 
 if __name__ == "__main__":
     populate_categories()
