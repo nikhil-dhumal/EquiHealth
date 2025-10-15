@@ -1,10 +1,10 @@
 # Database Schema (Tentative)
 
 > **Note:** This schema represents the **current phase** of the EquiHealth project, based on government data.  
-> It focuses on healthcare facilities, population distribution across districts, and the service categories hospitals provide.  
+> It focuses on healthcare facilities, population distribution across states and districts, and the service categories hospitals provide.  
 > Future phases may extend it to include subcategories, surgeries, complaints, and citizen feedback.
 
-This schema defines the **core structure** of the EquiHealth database, enabling analysis of hospital availability and service coverage across districts.
+This schema defines the **core structure** of the EquiHealth database, enabling analysis of hospital availability and service coverage across states and districts.
 
 ![Database Schema Diagram](images/database-schema-diagram.png)
 
@@ -12,13 +12,14 @@ This schema defines the **core structure** of the EquiHealth database, enabling 
 
 ## Overview
 
-The EquiHealth database is designed to capture **healthcare facility information** and **district-level population data**.  
-At this stage, the schema contains **four main tables**:
+The EquiHealth database is designed to capture **healthcare facility information**, **district-level population data**, and **state-level location data**.  
+At this stage, the schema contains **five main tables**:
 
-1. **District**
-2. **Hospital**
-3. **Category**
-4. **Hospital_Category (Mapping Table)**
+1. **State**
+2. **District**
+3. **Hospital**
+4. **Category**
+5. **Hospital_Category (Mapping Table)**
 
 These entities form the foundation for analyzing healthcare distribution and service coverage.
 
@@ -26,12 +27,28 @@ These entities form the foundation for analyzing healthcare distribution and ser
 
 ## Tables and Relationships
 
+### 🏛️ State
+Stores basic geographic information for each state.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `state_id` | INT (PK) | Unique identifier for each state |
+| `state_name` | VARCHAR | Name of the state |
+| `latitude` | DECIMAL | Latitude of the state center |
+| `longitude` | DECIMAL | Longitude of the state center |
+
+**Purpose:**  
+Captures state-level geographic information and enables aggregation of districts under each state.
+
+---
+
 ### 🗺️ District
 Stores population and geographic information for each district.
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `district_id` | INT (PK) | Unique identifier for each district |
+| `state_id` | INT (FK → State.state_id) | Reference to the state where the district is located |
 | `district_name` | VARCHAR | Name of the district |
 | `latitude` | DECIMAL | Latitude of the district center |
 | `longitude` | DECIMAL | Longitude of the district center |
@@ -43,7 +60,7 @@ Stores population and geographic information for each district.
 | `children_females` | INT | Female children population |
 
 **Purpose:**  
-Captures district demographics and location for mapping hospitals and analyzing service coverage.
+Captures district demographics and location for mapping hospitals and analyzing service coverage within states.
 
 ---
 
@@ -99,17 +116,21 @@ Enables modeling that a hospital can provide multiple service categories, and a 
 
 ## Relationships Summary
 
-1. **District ↔ Hospital**  
+1. **State ↔ District**  
+   - **One state → Many districts**  
+   - Each district belongs to a single state, enabling aggregation of population and services at the state level.
+
+2. **District ↔ Hospital**  
    - **One district → Many hospitals**  
    - Each hospital belongs to a single district, enabling aggregation of services and population analysis at the district level.
 
-2. **Hospital ↔ Category (via Hospital_Category)**  
+3. **Hospital ↔ Category (via Hospital_Category)**  
    - **Many-to-Many relationship**  
    - A hospital can offer multiple categories (services), and each category can exist in multiple hospitals.
 
-3. **Population & Services Integration**  
-   - By linking hospitals to districts, this schema allows analysis such as:
-     - Bed availability per 1,000 population in each district
+4. **Population & Services Integration**  
+   - By linking hospitals to districts (and districts to states), this schema allows analysis such as:
+     - Bed availability per 1,000 population in each district and state
      - Distribution of service categories relative to population demographics
 
 ---
@@ -123,6 +144,4 @@ Enables modeling that a hospital can provide multiple service categories, and a 
   Future tables like `subcategory`, `hospital_subcategory`, `complaints`, or `citizen_feedback` can be integrated using the same relational pattern.
 
 - **Data Integrity:**  
-  Foreign keys ensure that hospitals reference valid districts and that service mappings reference valid hospitals and categories.
-
----
+  Foreign keys ensure that districts reference valid states, hospitals reference valid districts, and service mappings reference valid hospitals and categories.
