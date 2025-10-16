@@ -11,7 +11,6 @@ from api.complaints import api_complaints
 app = Flask(__name__)
 app.config.from_object(Config)
 
-
 db.init_app(app)
 migrate = Migrate(app, db)
 

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from extensions import db
 
-# --- Association Table (composite FK -> hospital) ---
+# Association Table (composite FK -> hospital)
 hospital_category = db.Table(
     "hospital_category",
     db.Column("hospital_id", db.Integer, nullable=False),
@@ -17,7 +17,7 @@ hospital_category = db.Table(
     db.PrimaryKeyConstraint("hospital_id", "state_id", "category_id"),
 )
 
-# --- State ---
+# State
 class State(db.Model):
     __tablename__ = "state"
 
@@ -48,7 +48,7 @@ class State(db.Model):
             "longitude": self.longitude,
         }
 
-# --- District ---
+# District
 class District(db.Model):
     __tablename__ = "district"
 
@@ -88,7 +88,7 @@ class District(db.Model):
             "longitude": self.longitude,
         }
 
-# --- Hospital (composite PK: hospital_id + state_id) ---
+# Hospital (composite PK: hospital_id + state_id)
 class Hospital(db.Model):
     __tablename__ = "hospital"
 
@@ -145,7 +145,7 @@ class Hospital(db.Model):
             "government_subtype": self.government_subtype,
         }
 
-# --- Category ---
+# Category
 class Category(db.Model):
     __tablename__ = "category"
 
@@ -169,7 +169,7 @@ class Category(db.Model):
 class User(db.Model):
     __tablename__ = "user"
 
-    # --- Columns ---
+    # Columns
     phone_number = db.Column(db.String(20), primary_key=True, nullable=False, index=True)
     name = db.Column(db.String(128), nullable=False)
     details = db.Column(JSONB, nullable=True)
@@ -188,24 +188,24 @@ class Complaint(db.Model):
 
     complaint_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
-    # --- User details ---
+    # User details
     mobile = db.Column(db.String(20), nullable=False, index=True)
     name = db.Column(db.String(128), nullable=False)
 
-    # --- Foreign keys ---
+    # Foreign keys
     state_id = db.Column(db.Integer, db.ForeignKey("state.state_id", ondelete="SET NULL"), nullable=True)
     district_id = db.Column(db.Integer, db.ForeignKey("district.district_id", ondelete="SET NULL"), nullable=True)
     hospital_id = db.Column(db.Integer, nullable=True)
 
-    # --- Complaint details ---
+    # Complaint details
     title = db.Column(db.String(256), nullable=False)
     details = db.Column(db.Text, nullable=True)
 
-    # --- Metadata ---
+    # Metadata
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # --- Relationships ---
+    # Relationships
     state = db.relationship("State", backref="complaints", lazy=True)
     district = db.relationship("District", backref="complaints", lazy=True)
 

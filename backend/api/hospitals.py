@@ -7,7 +7,6 @@ api_hospitals = Blueprint("hospitals", __name__, url_prefix="/api/hospitals")
 
 
 def serialize_hospital(h):
-    """Serialize hospital with state, district, and categories."""
     return {
         **h.to_dict(),
         "state": (
@@ -34,7 +33,6 @@ def serialize_hospital(h):
 
 
 def fetch_hospitals(state_id, district_id=None, hospital_id=None):
-    """Internal helper to fetch hospitals efficiently."""
     query = (
         Hospital.query
         .options(
@@ -53,7 +51,12 @@ def fetch_hospitals(state_id, district_id=None, hospital_id=None):
     return query.order_by(Hospital.hospital_name.asc()).all()
 
 
-# get compact hospital by state_id, district_id and/or hospital_id
+# GET /api/hospitals/compact
+# PReturn a compact list of hospitals filtered by state_id and optionally by district_id and/or hospital_id.
+# Query:
+#   - state_id    (int, required): State to filter by.
+#   - district_id (int, optional): District to filter by (within the state).
+#   - hospital_id (int, optional): Specific hospital ID.
 @api_hospitals.route("/compact", methods=["GET"])
 def get_hospitals_compact():
     state_id = request.args.get("state_id", type=int)
@@ -79,7 +82,12 @@ def get_hospitals_compact():
     }), 200
 
 
-# Hospitals by State
+# GET /api/hospitals
+# Return hospitals filtered by state_id and optionally district_id and/or hospital_id.
+# Query:
+#   - state_id    (int, optional): State filter; if omitted, behavior depends on fetch_hospitals.
+#   - district_id (int, optional): District filter.
+#   - hospital_id (int, optional): Specific hospital ID.
 @api_hospitals.route("/", methods=["GET"])
 def get_hospitals():
     state_id = request.args.get("state_id", type=int) # defailt None
@@ -95,14 +103,14 @@ def get_hospitals():
     return jsonify({"count": len(data), "data": data}), 200
 
 
+# GET /api/hospitals/grouped
+# Return hospitals grouped hierarchically: state → districts → hospitals.
+# Query:
+#   - state_id    (int, required): State to group within.
+#   - district_id (int, optional): If provided, restrict results to this district.
 @api_hospitals.route("/grouped/", methods=["GET"])
 def get_grouped_hospitals():
-    """
-    Return hospitals grouped by state → district → hospitals.
-    Supports:
-        /api/hospitals/grouped/<state_id>
-        /api/hospitals/grouped/<state_id>/<district_id>
-    """
+
     state_id = request.args.get("state_id", type=int) # defailt None
     district_id = request.args.get("district_id", type=int)
 

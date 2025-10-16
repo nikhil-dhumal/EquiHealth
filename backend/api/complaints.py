@@ -65,21 +65,25 @@ def serialize_complaint(complaint, state, district, hospital):
         ),
     }
 
+
+# POST /api/complaints
+# Description: Creates a new complaint record.
+# Expects a JSON payload containing the complainant's details (phone number, name),
+# along with state, district, hospital references, and the complaint title and details.
+# 
+# POST /api/complaints
+#     JSON:
+#     {
+#         "phone_number": "9876543210",
+#         "name": "Chaitanya",
+#         "state_id": 18,
+#         "district_id": 4,
+#         "hospital_id": 23,
+#         "title": "Overcharging",
+#         "details": "Hospital billed extra for basic facilities."
+#     }
 @api_complaints.route("/", methods=["POST"])
 def create_complaint():
-    """
-    POST /api/complaints
-    JSON:
-    {
-        "phone_number": "9876543210",
-        "name": "Chaitanya",
-        "state_id": 18,
-        "district_id": 4,
-        "hospital_id": 23,
-        "title": "Overcharging",
-        "details": "Hospital billed extra for basic facilities."
-    }
-    """
     data = request.get_json() or {}
 
     # Validate required fields
@@ -137,20 +141,21 @@ def create_complaint():
     }), 201
 
 
-
+# GET /api/complaints
+# Description: Retrieves a paginated list of complaints with optional filters for state, district, and hospital.
+# Supports full-text search across title and details, configurable sorting, and adjustable page size.
+# 
+# Query params:
+#       state_id: int
+#       district_id: int
+#       hospital_id: int
+#       search: str   # matches title OR details (ILIKE %search%)
+#       page: int (default 1)
+#       page_size: int (default 20, max 100)
+#       order_by: str (default 'created_at' if present else 'complaint_id')
+#       order_dir: 'asc'|'desc' (default 'desc')
 @api_complaints.route("/", methods=["GET"])
 def get_complaints():
-    """
-    Query params:
-      state_id: int
-      district_id: int
-      hospital_id: int
-      search: str   # matches title OR details (ILIKE %search%)
-      page: int (default 1)
-      page_size: int (default 20, max 100)
-      order_by: str (default 'created_at' if present else 'complaint_id')
-      order_dir: 'asc'|'desc' (default 'desc')
-    """
     state_id = request.args.get("state_id", type=int)
     district_id = request.args.get("district_id", type=int)
     hospital_id = request.args.get("hospital_id", type=int)
@@ -211,12 +216,10 @@ def get_complaints():
 
 
 # Get Complaint by ID
+# GET /api/complaints/<complaint_id>
+# Returns complaint details (without phone number) including state, district, and hospital info.
 @api_complaints.route("/<int:complaint_id>", methods=["GET"])
 def get_complaint(complaint_id):
-    """
-    GET /api/complaints/<complaint_id>
-    Returns complaint details (without phone number) including state, district, and hospital info.
-    """
     # Fetch complaint
     complaint = Complaint.query.get_or_404(complaint_id)
 
