@@ -1,4 +1,7 @@
-from app import db
+from sqlalchemy.dialects.postgresql import JSONB
+from datetime import datetime
+
+from extensions import db
 
 # --- Association Table (composite FK -> hospital) ---
 hospital_category = db.Table(
@@ -159,4 +162,69 @@ class Category(db.Model):
         return {
             "category_id": self.category_id,
             "category_name": self.category_name,
+        }
+
+################### Complaints Model
+
+class User(db.Model):
+    __tablename__ = "user"
+
+    # --- Columns ---
+    phone_number = db.Column(db.String(20), primary_key=True, nullable=False, index=True)
+    name = db.Column(db.String(128), nullable=False)
+    details = db.Column(JSONB, nullable=True)
+
+    def to_dict(self):
+        return {
+            "phone_number": self.phone_number,
+            "name": self.name,
+            "details": self.details or {}
+        }
+
+
+
+class Complaint(db.Model):
+    __tablename__ = "complaint"
+
+    complaint_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    # --- User details ---
+    mobile = db.Column(db.String(20), nullable=False, index=True)
+    name = db.Column(db.String(128), nullable=False)
+
+    # --- Foreign keys ---
+    state_id = db.Column(db.Integer, db.ForeignKey("state.state_id", ondelete="SET NULL"), nullable=True)
+    district_id = db.Column(db.Integer, db.ForeignKey("district.district_id", ondelete="SET NULL"), nullable=True)
+    hospital_id = db.Column(db.Integer, nullable=True)
+
+    # --- Complaint details ---
+    title = db.Column(db.String(256), nullable=False)
+    details = db.Column(db.Text, nullable=True)
+
+    # --- Metadata ---
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # --- Relationships ---
+    state = db.relationship("State", backref="complaints", lazy=True)
+    district = db.relationship("District", backref="complaints", lazy=True)
+
+    __table_args__ = (
+        db.Index("idx_complaints_state", "state_id"),
+        db.Index("idx_complaints_district", "district_id"),
+        db.Index("idx_complaints_hospital", "hospital_id"),
+    )
+
+    def to_dict(self):
+        return {
+            "complaint_id": self.complaint_id,
+            "mobile": self.mobile,
+            "name": self.name,
+            "state_id": self.state_id,
+            "district_id": self.district_id,
+            "hospital_id": self.hospital_id,
+            "title": self.title,
+            "details": self.details,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }

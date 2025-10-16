@@ -5,7 +5,8 @@ import sys
 # Ensure we can import app + models
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app import app, db
+from app import app
+from extensions import db
 from models import Hospital, State, District
 
 # --- Config ---

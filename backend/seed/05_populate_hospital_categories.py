@@ -5,7 +5,8 @@ import csv
 # --- Ensure parent directory (project root) is importable ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from app import app, db
+from app import app
+from extensions import db
 from models import Hospital, Category, State, hospital_category
 
 CSV_FILE = "../../data/maharashtra/hospital_category.csv"
