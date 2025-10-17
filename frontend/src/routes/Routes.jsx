@@ -1,7 +1,7 @@
-import Home from './pages/Home'
-import FileComplaint from './pages/FileComplaint'
-import AnalyticsDashboard from './pages/AnalyticsDashboard'
-import ComplaintHistory from './pages/ComplaintHistory'
+import Home from '../pages/Home'
+import FileComplaint from '../pages/FileComplaint'
+import AnalyticsDashboard from '../pages/AnalyticsDashboard'
+import ComplaintHistory from '../pages/ComplaintHistory'
 
 const routes = [
   { path: '/', element: <Home /> },
