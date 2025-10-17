@@ -1,15 +1,21 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-function App() {
+import routes from './routes/Routes.jsx'
+
+const App = () => {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <h1>This is Equealth App</h1>
-    </>
+    <Router>
+      <Routes>
+        {
+          routes.map(({ path, element }, index) => {
+            <Route key={index} path={path} element={element} />
+          })  
+        }
+      </Routes>
+    </Router>
   )
 }
 
