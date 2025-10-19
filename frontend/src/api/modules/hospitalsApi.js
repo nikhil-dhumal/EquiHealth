@@ -1,4 +1,4 @@
-import client from "./clients/client.js";
+import client from "../clients/client.js";
 
 const endpoints = {
   getHospitals: "hospitals",
@@ -7,42 +7,36 @@ const endpoints = {
 };
 
 const hospitalsApi = {
-  getHospitals: async ({ stateId, districtId, hospitalId }) => {
+  getHospitals: async ({ stateId, districtId, hospitalId } = {}) => {
     try {
-      const res = await client.get(endpoints.getHospitals, {
-        params: {
-          state_id: stateId,
-          district_id: districtId,
-          hospital_id: hospitalId,
-        },
-      });
+      const params = {};
+      if (stateId) params.state_id = stateId;
+      if (districtId) params.district_id = districtId;
+      if (hospitalId) params.hospital_id = hospitalId;
+      const res = await client.get(endpoints.getHospitals, { params });
       return { res };
     } catch (err) {
       return { err };
     }
   },
-  getHospitalsCompact: async ({ stateId, districtId, hospitalId }) => {
+  getHospitalsCompact: async ({ stateId, districtId, hospitalId } = {}) => {
     try {
-      const res = await client.get(endpoints.getHospitalsCompact, {
-        params: {
-          state_id: stateId,
-          district_id: districtId,
-          hospital_id: hospitalId,
-        },
-      });
+      const params = {};
+      if (stateId) params.state_id = stateId;
+      if (districtId) params.district_id = districtId;
+      if (hospitalId) params.hospital_id = hospitalId;
+      const res = await client.get(endpoints.getHospitalsCompact, { params });
       return { res };
     } catch (err) {
       return { err };
     }
   },
-  getHospitalsGrouped: async ({ stateId, districtId }) => {
+  getHospitalsGrouped: async ({ stateId, districtId } = {}) => {
     try {
-      const res = await client.get(endpoints.getHospitalsGrouped, {
-        params: {
-          state_id: stateId,
-          district_id: districtId,
-        },
-      });
+      const params = {};
+      if (stateId) params.state_id = stateId;
+      if (districtId) params.district_id = districtId;
+      const res = await client.get(endpoints.getHospitalsGrouped, { params });
       return { res };
     } catch (err) {
       return { err };
