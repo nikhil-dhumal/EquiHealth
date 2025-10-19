@@ -7,7 +7,8 @@ export const stateSlice = createSlice({
   },
   reducers: {
     setStates: (state, action) => {
-      state.activePage = action.payload;
+      const { count, data } = action.payload
+      state.states = [...data];
     },
   },
 });
