@@ -1,4 +1,4 @@
-import client from "./clients/client.js";
+import client from "../clients/client.js";
 
 const endpoints = {
   getName: "users",

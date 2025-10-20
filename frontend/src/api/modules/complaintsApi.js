@@ -1,4 +1,4 @@
-import client from "./clients/client.js";
+import client from "../clients/client.js";
 
 const endpoints = {
   postComplaint: "complaints",
@@ -40,20 +40,18 @@ const complaintsApi = {
     pageSize,
     orderBy,
     orderDir,
-  }) => {
+  } = {}) => {
     try {
-      const res = await client.get(endpoints.getComplaints, {
-        params: {
-          state_id: stateId,
-          district_id: districtId,
-          hospital_id: hospitalId,
-          search: search,
-          page: page,
-          page_size: pageSize,
-          order_by: orderBy,
-          order_dir: orderDir,
-        },
-      });
+      const params = {};
+      if (stateId) params.state_id = stateId;
+      if (districtId) params.district_id = districtId;
+      if (hospitalId) params.hospital_id = hospitalId;
+      if (search) params.search = search;
+      if (page) params.page = page;
+      if (pageSize) params.page_size = pageSize;
+      if (orderBy) params.order_by = orderBy;
+      if (orderDir) params.order_dir = orderDir;
+      const res = await client.get(endpoints.getComplaints, { params });
       return { res };
     } catch (err) {
       return { err };
