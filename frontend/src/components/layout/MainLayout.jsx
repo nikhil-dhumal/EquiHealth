@@ -15,17 +15,21 @@ const MainLayout = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => {
-      const { res, err } = await statesApi.getStates();
-      if (res) dispatch(setStates(res));
-      if (err) console.log(err);
-    })();
-    (async () => {
-      const { res, err } = await hospitalsApi.getHospitals()
-      if (res) dispatch(setHospitals(re))
-      if (err) dispatch(setHospitals([]))
-    })
-  }, []);
+  const fetchStates = async () => {
+    const { res, err } = await statesApi.getStates();
+    if (res) dispatch(setStates(res));
+    else if (err) console.log(err);
+  };
+
+  const fetchHospitals = async () => {
+    const { res, err } = await hospitalsApi.getHospitals();
+    if (res) dispatch(setHospitals(res));
+    else dispatch(setHospitals([]));
+  };
+
+  fetchStates();
+  fetchHospitals();
+}, [dispatch]);
 
   return (
     <>
