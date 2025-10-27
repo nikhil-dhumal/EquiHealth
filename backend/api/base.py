@@ -7,10 +7,10 @@ from models import State, District, Hospital
 api_base = Blueprint("api", __name__, url_prefix="/api")
 
 def serialize_district(d: District):
-        return {
-            **d.to_dict(),
-            "state_name": d.state.state_name if d.state else None
-        }
+    return {
+        **d.to_dict(),
+        "state_name": d.state.state_name if d.state else None
+    }
 
 @api_base.route("/health", methods=["GET"])
 def health():
@@ -33,14 +33,15 @@ def get_states():
     }), 200
 
 # GET /api/districts
-# Retrieve districts either for a specific state or for all states.
+# Retrieve districts(with population data) either for a specific state or for all states or specific district accoring to disctrict id.
 # Query Parameters:
-#   - state_id (int, optional): If provided, returns districts belonging
-#     only to that state. If omitted, returns all districts across all states.
+#   - state_id (int, optional): If provided, returns districts belonging only to that state. If omitted, returns all districts across all states.
+#   - district_id (int, optional): If provided, returns specific district If omitted, returns all districts across state.
 @api_base.route("/districts", methods=["GET"])
 def get_districts():
     state_id = request.args.get("state_id", type=int)
     district_id = request.args.get("district_id", type=int)
+
     query = (
         District.query
         .options(
@@ -50,7 +51,6 @@ def get_districts():
 
     if state_id:
         query = query.filter_by(state_id=state_id)
-
     if district_id:
         query = query.filter_by(district_id=district_id)
 
