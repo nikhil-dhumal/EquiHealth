@@ -86,6 +86,12 @@ class District(db.Model):
             "state_id": self.state_id,
             "latitude": self.latitude,
             "longitude": self.longitude,
+            "total_persons": self.total_persons,
+            "total_males": self.total_males,
+            "total_females": self.total_females,
+            "children_persons": self.children_persons,
+            "children_males": self.children_males,
+            "children_females": self.children_females
         }
 
 # Hospital (composite PK: hospital_id + state_id)
