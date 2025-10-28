@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 
@@ -92,6 +92,16 @@ const SelectFilters = ({ selected, setSelected }) => {
       hospital: option,
     }));
   };
+
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      const { res, err } = await hospitalsApi.getHospitals();
+      if (res) dispatch(setHospitals(res));
+      else dispatch(setHospitals([]));
+    };
+
+    fetchHospitals();
+  }, [dispatch]);
 
   return (
     <div className="select-filters">
