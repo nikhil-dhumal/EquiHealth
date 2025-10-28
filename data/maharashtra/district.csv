@@ -1,4 +1,4 @@
-district_id,district,state_id,latitude,longitude,total_persons,total_males,total_females,children_persons,children_males,children_females
+district_id,district_name,state_id,latitude,longitude,total_persons,total_males,total_females,children_persons,children_males,children_females
 1,AHILYANAGAR,18,19.26543469320783,74.63757631228916,4543159,2342825,2200334,556014,300238,255776
 2,AKOLA,18,20.76513778262712,77.0547006588983,1813906,932334,881572,211080,110372,100708
 3,AMRAVATI,18,21.128580486153844,77.64820689868131,2888445,1480768,1407677,311391,160934,150457
