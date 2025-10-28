@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { capitalizeWords } from "../../utils/formatters";
 
 export const districtsSlice = createSlice({
   name: "Districts",
@@ -8,7 +9,10 @@ export const districtsSlice = createSlice({
   reducers: {
     setDistricts: (state, action) => {
       const { count, data } = action.payload
-      state.districts = [...data];
+      state.districts = data.map((d) => ({
+        ...d,
+        district_name: capitalizeWords(d.district_name),
+      }));
     },
   },
 });
