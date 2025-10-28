@@ -32,7 +32,7 @@ def serialize_hospital(h):
     }
 
 
-def fetch_hospitals(state_id, district_id=None, hospital_id=None):
+def fetch_hospitals(state_id=None, district_id=None, hospital_id=None):
     query = (
         Hospital.query
         .options(
@@ -40,8 +40,10 @@ def fetch_hospitals(state_id, district_id=None, hospital_id=None):
             joinedload(Hospital.district),
             joinedload(Hospital.categories),
         )
-        .filter_by(state_id=state_id)
     )
+    if state_id:
+        query = query.filter_by(state_id=state_id)
+
     if district_id:
         query = query.filter_by(district_id=district_id)
 
@@ -106,7 +108,7 @@ def get_hospitals():
 # GET /api/hospitals/grouped
 # Return hospitals grouped hierarchically: state → districts → hospitals.
 # Query:
-#   - state_id    (int, required): State to group within.
+#   - state_id    (int, optional): State to group within.
 #   - district_id (int, optional): If provided, restrict results to this district.
 @api_hospitals.route("/grouped/", methods=["GET"])
 def get_grouped_hospitals():
@@ -121,16 +123,20 @@ def get_grouped_hospitals():
             joinedload(Hospital.state),
             joinedload(Hospital.district)
         )
-        .filter(Hospital.state_id == state_id)
-        .order_by(Hospital.district_id, Hospital.hospital_name)
+        .order_by(Hospital.district_id, Hospital.state_id, Hospital.hospital_name)
     )
+
+    if state_id is not None:
+        query = query.filter(Hospital.state_id == state_id)
 
     if district_id is not None:
         query = query.filter(Hospital.district_id == district_id)
 
     hospitals = query.all()
     if not hospitals:
-        msg = f"No hospitals found for state_id {state_id}"
+        msg = f"No hospitals found, "
+        if state_id:
+            msg += f", state_id {state_id}"
         if district_id:
             msg += f", district_id {district_id}"
         return jsonify({"message": msg, "count": 0, "data": []}), 404
