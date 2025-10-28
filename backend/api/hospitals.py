@@ -41,13 +41,13 @@ def fetch_hospitals(state_id=None, district_id=None, hospital_id=None):
             joinedload(Hospital.categories),
         )
     )
-    if state_id:
+    if state_id is not None:
         query = query.filter_by(state_id=state_id)
 
-    if district_id:
+    if district_id is not None:
         query = query.filter_by(district_id=district_id)
 
-    if hospital_id:
+    if hospital_id is not None:
         query = query.filter_by(hospital_id=hospital_id)
 
     return query.order_by(Hospital.hospital_name.asc()).all()
@@ -70,10 +70,10 @@ def get_hospitals_compact():
         .filter_by(state_id=state_id)
     )
 
-    if district_id:
+    if district_id is not None:
         query = query.filter_by(district_id=district_id)
 
-    if hospital_id:
+    if hospital_id is not None:
         query = query.filter_by(hospital_id=hospital_id)
 
     hospitals = query.order_by(Hospital.hospital_name.asc()).all()
