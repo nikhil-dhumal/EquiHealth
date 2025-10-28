@@ -50,7 +50,7 @@ def populate_districts():
 
             for row in reader:
                 district_id = clean_int(row.get("district_id"))
-                district_name = clean_str(row.get("district"))  # note: column is "district"
+                district_name = clean_str(row.get("district_name")) 
                 
 
                 if district_id is None or district_name is None or state_id is None:
