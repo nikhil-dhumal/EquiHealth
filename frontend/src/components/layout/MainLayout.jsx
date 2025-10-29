@@ -2,25 +2,25 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Outlet } from "react-router-dom";
 
-import statesApi from "../../api/modules/statesApi.js";
+import hospitalsApi from "../../api/modules/hospitalsApi.js";
 
 import NavBar from "../common/Navbar";
 import Footer from "../common/Footer";
 
-import { setStates } from "../../redux/features/statesSlice.js";
+import { setHealthInfra } from "../../redux/features/healthInfraSlice.js";
 
 const MainLayout = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-  const fetchStates = async () => {
-    const { res, err } = await statesApi.getStates();
-    if (res) dispatch(setStates(res));
-    else if (err) console.log(err);
-  };
-
-  fetchStates();
-}, [dispatch]);
+    const fetchHospitalInfra = async () => {
+      const { res, err } = await hospitalsApi.getHospitalsGrouped();
+      if (res) dispatch(setHealthInfra(res));
+      else if (err) console.log(err);
+    };
+    
+    fetchHospitalInfra();
+  }, [dispatch]);
 
   return (
     <>
