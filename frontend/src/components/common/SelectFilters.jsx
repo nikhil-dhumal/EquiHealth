@@ -1,12 +1,6 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import Select from "react-select";
-
-import districtApi from "../../api/modules/districtsApi.js";
-import hospitalsApi from "../../api/modules/hospitalsApi.js";
-
-import { setDistricts } from "../../redux/features/districtsSlice.js";
-import { setHospitals } from "../../redux/features/hospitalsSlice.js";
 
 const selectStyles = {
   control: (base, state) => ({
@@ -42,25 +36,39 @@ const selectStyles = {
 };
 
 const SelectFilters = ({ selected, setSelected }) => {
-  const dispatch = useDispatch();
+  const { states, districts, hospitals } = useSelector(
+    (state) => state.healthInfra
+  );
 
-  const { states } = useSelector((state) => state.states);
-  const { districts } = useSelector((state) => state.districts);
-  const { hospitals } = useSelector((state) => state.hospitals);
+  const stateOptions = states.allIds.map((id) => {
+    const s = states.byId[id];
+    return {
+      value: s.state_id,
+      label: s.state_name,
+    };
+  });
 
-  const handleStateChange = async (option) => {
-    const stateId = option?.value;
+  const districtOptions = selected.state
+    ? states.byId[selected.state.value].districts.map((distId) => {
+        const d = districts.byId[distId];
+        return {
+          value: d.district_id,
+          label: d.district_name,
+        };
+      })
+    : [];
 
-    const { res: districtRes, err: districtErr } =
-      await districtApi.getDistricts({ stateId });
-    if (districtRes) dispatch(setDistricts(districtRes));
-    if (districtErr) console.error(districtErr);
+  const hospitalOptions = selected.district
+    ? districts.byId[selected.district.value].hospitals.map((hId) => {
+        const h = hospitals.byId[hId];
+        return {
+          value: h.hospital_id,
+          label: h.hospital_name,
+        };
+      })
+    : [];
 
-    const { res: hospitalRes, err: hospitalErr } =
-      await hospitalsApi.getHospitals({ stateId });
-    if (hospitalRes) dispatch(setHospitals(hospitalRes));
-    if (hospitalErr) console.error(hospitalErr);
-
+  const handleStateChange = (option) => {
     setSelected({
       state: option,
       district: null,
@@ -68,17 +76,7 @@ const SelectFilters = ({ selected, setSelected }) => {
     });
   };
 
-  const handleDistrictChange = async (option) => {
-    const districtId = option?.value;
-    const stateId = selected.state.value;
-
-    const { res, err } = await hospitalsApi.getHospitals({
-      stateId,
-      districtId,
-    });
-    if (res) dispatch(setHospitals(res));
-    if (err) console.error(err);
-
+  const handleDistrictChange = (option) => {
     setSelected((prev) => ({
       ...prev,
       district: option,
@@ -93,28 +91,13 @@ const SelectFilters = ({ selected, setSelected }) => {
     }));
   };
 
-  useEffect(() => {
-    const fetchHospitals = async () => {
-      const { res, err } = await hospitalsApi.getHospitals();
-      if (res) dispatch(setHospitals(res));
-      else dispatch(setHospitals([]));
-    };
-
-    fetchHospitals();
-  }, [dispatch]);
-
   return (
     <div className="select-filters">
       <Select
         className="filter"
         styles={selectStyles}
         value={selected.state}
-        options={states.map((s) => ({
-          value: s.state_id,
-          label: s.state_name,
-          latitude: s.latitude,
-          longitude: s.longitude,
-        }))}
+        options={stateOptions}
         onChange={handleStateChange}
         placeholder="Select State"
         isClearable
@@ -123,30 +106,20 @@ const SelectFilters = ({ selected, setSelected }) => {
         className="filter"
         styles={selectStyles}
         value={selected.district}
-        options={districts.map((d) => ({
-          value: d.district_id,
-          label: d.district_name,
-          latitude: d.latitude,
-          longitude: d.longitude,
-        }))}
+        options={districtOptions}
         onChange={handleDistrictChange}
         placeholder="Select District"
-        isDisabled={!selected.state?.value}
+        isDisabled={!selected.state}
         isClearable
       />
       <Select
         className="filter"
         styles={selectStyles}
         value={selected.hospital}
-        options={hospitals.map((h) => ({
-          value: h.hospital_id,
-          label: h.hospital_name,
-          latitude: h.latitude,
-          longitude: h.longitude,
-        }))}
+        options={hospitalOptions}
         onChange={handleHospitalChange}
         placeholder="Select Hospital"
-        isDisabled={!selected.district?.value}
+        isDisabled={!selected.district}
         isClearable
       />
     </div>
